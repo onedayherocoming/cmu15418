@@ -158,5 +158,22 @@ float arraySumVector(float *values, int N)
 {
 	// Implement your vectorized version here
 	//  ...
-	return 0.f;
+	__cmu418_vec_float x, xAdd;
+	__cmu418_vec_float result = _cmu418_vset_float(0.0f);
+	__cmu418_mask maskAll = _cmu418_init_ones(VECTOR_WIDTH);
+	for (int i = 0; i < N; i += VECTOR_WIDTH)
+	{
+		_cmu418_vload_float(x, values + i, maskAll);
+		_cmu418_vadd_float(result, result, x, maskAll);
+	}
+	float res[VECTOR_WIDTH];
+
+	for (int i = 1; i < VECTOR_WIDTH; i *= 2)
+	{
+		_cmu418_hadd_float(result, result);
+		_cmu418_interleave_float(result, result);
+	}
+	_cmu418_vstore_float(res, result, maskAll);
+
+	return res[0];
 }

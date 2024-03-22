@@ -6,4 +6,5 @@ cd $build_path
 
 make
 
-./vrun -s 14  &> $log_path
+echo "vector test" > $log_path
+./vrun -s 1024  &>> $log_path
